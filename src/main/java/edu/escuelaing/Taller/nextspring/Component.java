@@ -6,7 +6,5 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.ElementType;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface GetMapping {
-    public String value() default "/defaultservice";
-}
+@Target(ElementType.TYPE)
+public @interface Component {}

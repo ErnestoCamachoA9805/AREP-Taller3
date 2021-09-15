@@ -10,11 +10,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.escuelaing.Taller.nextspring.GetMapping;;
+import edu.escuelaing.Taller.nextspring.RequestMapping;;
 
+/**
+ * Basado en el desarrollo en clase con el profesor 
+ */
 public class HttpServer {
     private static HttpServer _instance = new HttpServer();
     private final HashMap<String, Method> services = new HashMap<String, Method>();
@@ -23,15 +27,15 @@ public class HttpServer {
 
     }
 
-    private static HttpServer getInstance() {
+    public static HttpServer getInstance() {
         return _instance;
     }
 
-    public static void main(String... args) throws IOException, URISyntaxException {
+    /*public static void main(String... args) throws IOException, URISyntaxException {
         HttpServer.getInstance().startServer(args);
-    }
+    }*/
 
-    public void startServer(String[] args) throws IOException, URISyntaxException {
+    public void startServer(List<String> list) throws IOException, URISyntaxException {
         int port = 35000;
         ServerSocket serverSocket = null;
         try {
@@ -40,7 +44,7 @@ public class HttpServer {
             System.err.println("Could not listen on port: " + port);
             System.exit(1);
         }
-        loadComponents(args);
+        loadComponents(list);
         Socket clientSocket = null;
         boolean running = true;
         while (running) {
@@ -57,14 +61,14 @@ public class HttpServer {
         serverSocket.close();
     }
 
-    private void loadComponents(String[] componentsList) {
-        for (String component : componentsList) {
+    private void loadComponents(List<String> list) {
+        for (String component : list) {
             Class c = null;
             try {
                 c = Class.forName(component);
                 for (Method m : c.getDeclaredMethods()) {
-                    if (m.isAnnotationPresent(GetMapping.class)) {
-                        String uri = m.getAnnotation(GetMapping.class).value();
+                    if (m.isAnnotationPresent(RequestMapping.class)) {
+                        String uri = m.getAnnotation(RequestMapping.class).value();
                         services.put(uri, m);
                     }
                 }
